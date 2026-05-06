@@ -1,8 +1,10 @@
 // No mapping needed - backend already returns correctly formatted data
 // Response format: { id, name, dueDate, completed }
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 export const addItemToServer = async (name, dueDate) => {
-  const response = await fetch("http://localhost:3000/api/todo", {
+  const response = await fetch(`${API_URL}/api/todo`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ task: name, date: dueDate }),
@@ -13,26 +15,23 @@ export const addItemToServer = async (name, dueDate) => {
 };
 
 export const getItemsFromServer = async () => {
-  const response = await fetch("http://localhost:3000/api/todo");
+  const response = await fetch(`${API_URL}/api/todo`);
   const items = await response.json();
   console.log("Items loaded from server:", items);
   return items; // Already properly formatted by backend
 };
 
 export const markItemCompleted = async (id) => {
-  const response = await fetch(
-    `http://localhost:3000/api/todo/${id}/completed`,
-    {
-      method: "PUT",
-    },
-  );
+  const response = await fetch(`${API_URL}/api/todo/${id}/completed`, {
+    method: "PUT",
+  });
   const item = await response.json();
   return item; // Already properly formatted
 };
 
 export const deleteItemFromServer = async (id) => {
   console.log("Deleting item with id:", id);
-  await fetch(`http://localhost:3000/api/todo/${id}`, {
+  await fetch(`${API_URL}/api/todo/${id}`, {
     method: "DELETE",
   });
   return id;
@@ -41,16 +40,13 @@ export const deleteItemFromServer = async (id) => {
 export const toggleItemOnServer = async (id, completed) => {
   try {
     console.log("Toggling item:", id, "to completed:", completed);
-    const response = await fetch(
-      `http://localhost:3000/api/todo/${id}/completed`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ completed }),
+    const response = await fetch(`${API_URL}/api/todo/${id}/completed`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ completed }),
+    });
 
     if (!response.ok) {
       throw new Error("Failed to update status on server");
